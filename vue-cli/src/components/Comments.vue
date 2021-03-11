@@ -3,19 +3,10 @@
         <h1 class="mt-5">Comentários</h1>
         <hr />
 
-        <div class="form-todo form-group">
-            <div class="row mb-1">
-                <input placeholder="nome" type="text" name="author" class="form-control" v-model="name" />
-            </div>
-            <div class="row mb-1">
-                <textarea placeholder="Comentário" name="message" class="form-control" v-model="message"></textarea>
-            </div>
+        <FormTodo v-on:add-todo="addComment"></FormTodo>
 
-            <div class="row mb-1">
-                <button v-on:click="addComment" type="submit" class="btn btn-primary">Comentar</button>
-            </div>
 
-        </div>
+        <p v-if="comments.length <= 0">Sem comentários</p>
 
         <div class="list-group mt-5">
             <div class="list-grou-item" v-for="(comment, index) in allComments" :key="comment.index">
@@ -33,28 +24,20 @@
 </template>
 
 <script>
+import FormTodo from './FormTodo';
 
 export default {
+    components: {
+        FormTodo
+    },
     data(){
         return {
-            comments:[],
-            name: '',
-            message: ''
+            comments:[]
         }
     },
     methods:{
-        addComment(){
-            if(this.message.trim() === ""){
-                return;
-            }
-
-            this.comments.push({
-                name: this.name,
-                message: this.message
-            });
-
-            this.name = "";
-            this.message = "";
+        addComment(comment){
+            this.comments.push(comment);
         },
         removeComment(index){
             this.comments.splice(index, 1);

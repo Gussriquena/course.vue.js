@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import Comments from './components/Comments'
+import Comments from './components/Comments.vue'
 
 export default {
   name: 'App',
