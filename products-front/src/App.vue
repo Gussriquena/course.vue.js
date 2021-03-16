@@ -6,15 +6,21 @@
       </div>
     </nav>
     <div class="container">
-      <form>
-          <label>Nome</label>
-          <input type="text" placeholder="Nome">
-          <label>Quantidade</label>
-          <input type="number" placeholder="QTD">
-          <label>Valor</label>
-          <input type="text" placeholder="Valor">
-          <button class="waves-effect waves-light btn-small">Salvar<i class="material-icons left">save</i></button>
-      </form>
+
+        <ul>
+            <li v-for="(erro, index) of errors" :key="index">
+                campo <b> {{ erro.field }} </b> - {{ erro.defaultMessage }}
+            </li>
+        </ul>
+        <form @submit.prevent="salvar">
+            <label>Nome</label>
+            <input type="text" placeholder="Nome" v-model="produto.nome">
+            <label>Quantidade</label>
+            <input type="number" placeholder="QTD" v-model="produto.quantidade">
+            <label>Valor</label>
+            <input type="text" placeholder="Valor" v-model="produto.valor">
+            <button class="waves-effect waves-light btn-small">Salvar<i class="material-icons left">save</i></button>
+        </form>
       <table>
             <thead>
                 <tr>
@@ -48,15 +54,38 @@ export default {
 
     data(){
         return{
-            produtos: []
+            produto: {
+                nome: '',
+                quantidade: '',
+                valor: ''
+            },
+            produtos: [],
+            errors: []
         }
     },
 
     mounted(){
-        Produto.listar().then(resposta => {
-            console.log(resposta.data);
-            this.produtos = resposta.data
-        })
+        this.listar()
+    },
+
+    methods:{
+        listar(){
+            Produto.listar().then(resposta => {
+                this.produtos = resposta.data
+            })
+        },
+
+        salvar(){
+            Produto.salvar(this.produto).then(resposta => {
+                console.log(resposta.data);
+                this.produto = {}
+                alert('Salvo com sucesso')
+                this.listar();
+                this.errors = []
+            }).catch(e => {
+                this.errors = e.response.data.errors
+            })
+        },
     }
 }
 
